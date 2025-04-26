@@ -67,7 +67,7 @@
                             <input type="text" id="plan-label-INDEX" class="plan-label" placeholder="z.B. BBA 6">
                         </div>
                         <div class="input-group">
-                            <label for="plan-filter-INDEX">Module filtern (optional):</label>
+                            <label for="plan-filter-INDEX">Module filtern:</label>
                             <input type="text" id="plan-filter-INDEX" class="plan-filter" placeholder="z.B. PBA1, SPBA">
                         </div>
                         <button class="remove-plan" onclick="removePlan(INDEX)">Entfernen</button>
@@ -92,7 +92,7 @@
             </div>
         </div>
 
-        <button id="execute" class="execute-button" disabled onclick="executeAction()">Jetzt importieren</button>
+        <button id="execute" class="execute-button" disabled onclick="executeAction()">Ausführen</button>
 
         <div id="status" class="status"></div>
     </div>
@@ -118,7 +118,7 @@
 }</pre>
 
         <h4>Hilfe und Dokumentation:</h4>
-        <p>Die API durchsucht die angegebenen Vorlesungspläne und extrahiert alle Veranstaltungen. Du kannst optional Module mit dem Filter-Parameter eingrenzen.</p>
+        <p>Die API durchsucht die angegebenen Vorlesungspläne und extrahiert alle Veranstaltungen der angegeben Module. Du kannst Module mit dem Filter-Parameter eingrenzen.</p>
         <p>Fehlermeldungen werden hier im Status-Bereich angezeigt. Bitte stelle sicher, dass die URL-Adressen korrekt sind und auf gültige THWS-Vorlesungspläne verweisen.</p>
         <p>Dieser Service funktioniert nur in Kombination mit <a href="https://www.make.com/en">make</a></p>
     </div>
