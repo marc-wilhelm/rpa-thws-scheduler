@@ -7,20 +7,21 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-   <div class="page-layout">
-    <div class="container">
+
+<div class="page-layout">
+    <div class="content-block">
         <h1>THWS Scheduler</h1>
         <h2>Business School</h2>
 
         <div id="options">
             <div class="option-card" onclick="selectOption('scrape')">
                 <div class="option-title">Vorlesungsplan importieren/aktualisieren</div>
-                <div class="option-description">Stellt eine Anfrage an die API, welche alle angegeneb Vorlesungpläne nach Modulen absucht (scrapt) und anschließend als JSON zurückgibt. Über diese JSON Struktur, wird dann iterriert, um alle Tage und Vorlesungen zu bekommen, wobei anschließend für jede vorlesung ein Termin im Kalender neu eingetragen wird oder aktualisiert wird.</div>
+                <div class="option-description">Stellt eine Anfrage an die API, welche alle angegebenen Vorlesungspläne nach Modulen absucht (scrapt) und anschließend als JSON zurückgibt. Über diese JSON-Struktur wird dann iteriert, um alle Tage und Vorlesungen zu bekommen, wobei anschließend für jede Vorlesung ein Termin im Kalender neu eingetragen oder aktualisiert wird.</div>
             </div>
 
             <div class="option-card" onclick="selectOption('clear')">
                 <div class="option-title">Kalender leeren</div>
-                <div class="option-description">Löscht alle vorhanden Termine aus deinem Kalender.</div>
+                <div class="option-description">Löscht alle vorhandenen Termine aus deinem Kalender.</div>
             </div>
         </div>
 
@@ -29,13 +30,12 @@
         <div id="status" class="status"></div>
     </div>
 
-    <aside class="info-box">
+    <div class="content-block">
         <h3>API Info</h3>
         <p><strong>URL:</strong><br><code>https://thws-scheduler.azurewebsites.net/api/schedule_scraper</code></p>
 
         <h4>Content-Request:</h4>
-        <pre>
-{
+        <pre>{
   "plans": [
     {
       "url": "https://business.thws.de/fileadmin/share/vlplan/BBA%206%20SS%2025.html",
@@ -48,9 +48,8 @@
       "filter": ["SP WINF"]
     }
   ]
-}
-        </pre>
-    </aside>
+}</pre>
+    </div>
 </div>
 
 <footer class="footer">
@@ -60,6 +59,5 @@
 </footer>
 
 <script src="script.js"></script>
-
 </body>
 </html>
