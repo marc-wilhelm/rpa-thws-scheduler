@@ -191,7 +191,7 @@ async function executeAction() {
             try {
                 const responseData = await response.json();
                 statusElement.className = 'status success';
-                let statusHTML = `<div>${responseData.message || 'Aktion erfolgreich ausgeführt!'}</div>`;
+                let statusHTML = `<div>${responseData.message || ''}</div>`;
 
                 if (responseData.timestamp) {
                     const timestamp = new Date(responseData.timestamp * 1000).toLocaleString('de-DE');
@@ -200,11 +200,15 @@ async function executeAction() {
 
                 statusElement.innerHTML = statusHTML;
             } catch (jsonError) {
+                // Wenn die Antwort nicht als JSON geparst werden kann, zeigen wir den Rohtext an
+                const responseText = await response.text();
                 statusElement.className = 'status success';
-                statusElement.innerHTML = `<div>Aktion erfolgreich abgeschlossen!</div>`;
+                statusElement.innerHTML = `<div>${responseText}</div>`;
             }
         } else {
-            throw new Error(`HTTP-Fehler: ${response.status}`);
+            // Bei HTTP-Fehlern versuchen wir den Fehlertext auszulesen
+            const errorText = await response.text();
+            throw new Error(`HTTP-Fehler: ${response.status} - ${errorText}`);
         }
     } catch (error) {
         statusElement.className = 'status error';
