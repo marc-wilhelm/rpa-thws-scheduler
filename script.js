@@ -1,4 +1,5 @@
 const webhookUrl = 'https://hook.eu2.make.com/fttyrd5bv8ah1q6xyrvvu5eg88kq1b13';
+const apiBaseUrl = 'http://localhost:5000'; // Nur für den Vorlesungsplan-Scraper
 let selectedAction = null;
 let currentTab = 'structured';
 let planCounter = 1;
@@ -251,6 +252,7 @@ async function executeAction() {
             }
         }
         
+        // Anfrage direkt an make.com senden (nicht über das Python-Backend)
         const requestOptions = {
             method: 'POST',
             headers: {
