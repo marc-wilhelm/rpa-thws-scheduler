@@ -186,10 +186,12 @@ async function executeAction() {
         };
         
         const response = await fetch(webhookUrl, requestOptions);
+        const responseText = await response.text(); // Lese den Body NUR EINMAL
 
         if (response.ok) {
             try {
-                const responseData = await response.json();
+                // Versuche den Text als JSON zu parsen
+                const responseData = JSON.parse(responseText);
                 statusElement.className = 'status success';
                 let statusHTML = `<div>${responseData.message || ''}</div>`;
 
@@ -200,15 +202,12 @@ async function executeAction() {
 
                 statusElement.innerHTML = statusHTML;
             } catch (jsonError) {
-                // Wenn die Antwort nicht als JSON geparst werden kann, zeigen wir den Rohtext an
-                const responseText = await response.text();
+                // Wenn der Text kein gültiges JSON ist, zeige den Rohtext an
                 statusElement.className = 'status success';
                 statusElement.innerHTML = `<div>${responseText}</div>`;
             }
         } else {
-            // Bei HTTP-Fehlern versuchen wir den Fehlertext auszulesen
-            const errorText = await response.text();
-            throw new Error(`HTTP-Fehler: ${response.status} - ${errorText}`);
+            throw new Error(`HTTP-Fehler: ${response.status} - ${responseText}`);
         }
     } catch (error) {
         statusElement.className = 'status error';
