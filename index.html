@@ -3,189 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>THWS Vorlesungsplan Controller</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 500px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f0f0f0;
-        }
-        .container {
-            background-color: white;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        h1 {
-            color: #0056b3;
-            text-align: center;
-            margin-bottom: 25px;
-        }
-        .option-card {
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 15px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .option-card:hover {
-            background-color: #f9f9f9;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        .option-card.selected {
-            border-color: #0056b3;
-            background-color: #e6f0ff;
-        }
-        .option-title {
-            font-weight: bold;
-            font-size: 18px;
-            margin-bottom: 5px;
-        }
-        .option-description {
-            color: #666;
-            font-size: 14px;
-        }
-        .execute-button {
-            display: block;
-            width: 100%;
-            padding: 12px;
-            background-color: #0056b3;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            margin-top: 20px;
-        }
-        .execute-button:hover {
-            background-color: #003d82;
-        }
-        .execute-button:disabled {
-            background-color: #cccccc;
-            cursor: not-allowed;
-        }
-        .status {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 5px;
-            display: none;
-        }
-        .success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-        .error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-        .loading {
-            background-color: #e2f3f7;
-            color: #0c5460;
-            border: 1px solid #bee5eb;
-        }
-        .response-details {
-            font-size: 12px;
-            margin-top: 10px;
-            color: #666;
-        }
-    </style>
+    <title>THWS Scheduler</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <h1>THWS Vorlesungsplan Controller</h1>
-        
+        <h1>THWS Scheduler</h1>
+        <h2>Business School</h2>
+
         <div id="options">
             <div class="option-card" onclick="selectOption('scrape')">
                 <div class="option-title">Vorlesungsplan aktualisieren</div>
                 <div class="option-description">Lädt den aktuellen Vorlesungsplan herunter und aktualisiert deinen Kalender.</div>
             </div>
-            
+
             <div class="option-card" onclick="selectOption('clear')">
                 <div class="option-title">Kalender leeren</div>
                 <div class="option-description">Löscht alle Vorlesungstermine aus deinem Kalender.</div>
             </div>
         </div>
-        
+
         <button id="execute" class="execute-button" disabled onclick="executeAction()">Ausführen</button>
-        
+
         <div id="status" class="status"></div>
     </div>
 
-    <script>
-        // Hier deine Webhook-URL eintragen
-        const webhookUrl = 'https://hook.eu2.make.com/fttyrd5bv8ah1q6xyrvvu5eg88kq1b13';
-        let selectedAction = null;
-        
-        function selectOption(action) {
-            selectedAction = action;
-            
-            // Visuelle Auswahl aktualisieren
-            document.querySelectorAll('.option-card').forEach(card => {
-                card.classList.remove('selected');
-            });
-            
-            document.querySelector(`.option-card:nth-child(${action === 'scrape' ? 1 : 2})`).classList.add('selected');
-            
-            // Button aktivieren
-            document.getElementById('execute').disabled = false;
-        }
-        
-        async function executeAction() {
-            if (!selectedAction) return;
-            
-            const statusElement = document.getElementById('status');
-            statusElement.style.display = 'block';
-            statusElement.className = 'status loading';
-            statusElement.innerHTML = '<div>Führe Aktion aus...</div>';
-            
-            // Button deaktivieren während der Ausführung
-            document.getElementById('execute').disabled = true;
-            
-            try {
-                const response = await fetch(`${webhookUrl}?action=${selectedAction}`);
-                
-                if (response.ok) {
-                    // Versuche, die JSON-Antwort zu parsen
-                    try {
-                        const responseData = await response.json();
-                        
-                        // Zeige die Response-Daten an
-                        statusElement.className = 'status success';
-                        
-                        // Hauptnachricht
-                        let statusHTML = `<div>${responseData.message || 'Aktion erfolgreich ausgeführt!'}</div>`;
-                        
-                        // Details, falls vorhanden
-                        if (responseData.timestamp) {
-                            const timestamp = new Date(responseData.timestamp * 1000).toLocaleString('de-DE');
-                            statusHTML += `<div class="response-details">Zeitstempel: ${timestamp}</div>`;
-                        }
-                        
-                        statusElement.innerHTML = statusHTML;
-                    } catch (jsonError) {
-                        // Wenn die Antwort kein gültiges JSON ist, zeige trotzdem eine Erfolgsmeldung
-                        statusElement.className = 'status success';
-                        statusElement.innerHTML = `<div>Die Aktion "${selectedAction === 'scrape' ? 'Vorlesungsplan aktualisieren' : 'Kalender leeren'}" wurde erfolgreich ausgeführt!</div>`;
-                    }
-                } else {
-                    throw new Error(`HTTP-Fehler: ${response.status}`);
-                }
-            } catch (error) {
-                statusElement.className = 'status error';
-                statusElement.innerHTML = `<div>Es ist ein Fehler aufgetreten: ${error.message}</div>`;
-            }
-            
-            // Button wieder aktivieren
-            document.getElementById('execute').disabled = false;
-        }
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
