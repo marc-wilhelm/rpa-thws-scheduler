@@ -191,24 +191,29 @@ async function executeAction() {
         if (response.ok) {
             try {
                 // Versuche den Text als JSON zu parsen
-                const responseData = JSON.parse(responseText);
+                let responseData = JSON.parse(responseText);
+                
+                // Prüfe, ob responseData ein Array ist und das erste Element einen body-String enthält
+                if (Array.isArray(responseData) && responseData.length > 0 && responseData[0].body) {
+                    // Parse den body-String zu JSON
+                    try {
+                        responseData = JSON.parse(responseData[0].body);
+                    } catch (innerError) {
+                        console.error("Fehler beim Parsen des Body-Strings:", innerError);
+                        // Fallback auf den ursprünglichen responseData
+                    }
+                }
+                
                 statusElement.className = 'status success';
                 let statusHTML = `<div>${responseData.message || ''}</div>`;
 
                 if (responseData.timestamp) {
-                    // Prüfe, ob timestamp ein String oder eine Zahl ist
-                    if (typeof responseData.timestamp === 'string') {
-                        // Wenn es ein String ist, zeige ihn direkt an
-                        statusHTML += `<div class="response-details">Zeitstempel: ${responseData.timestamp}</div>`;
-                    } else {
-                        // Wenn es eine Zahl ist (Unix-Timestamp), konvertiere sie zu einem Datum
-                        const timestamp = new Date(responseData.timestamp * 1000).toLocaleString('de-DE');
-                        statusHTML += `<div class="response-details">Zeitstempel: ${timestamp}</div>`;
-                    }
+                    statusHTML += `<div class="response-details">Zeitstempel: ${responseData.timestamp}</div>`;
                 }
 
                 statusElement.innerHTML = statusHTML;
             } catch (jsonError) {
+                console.error("JSON-Parsing-Fehler:", jsonError);
                 // Wenn der Text kein gültiges JSON ist, zeige den Rohtext an
                 statusElement.className = 'status success';
                 statusElement.innerHTML = `<div>${responseText}</div>`;
