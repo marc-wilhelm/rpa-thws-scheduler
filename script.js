@@ -196,8 +196,15 @@ async function executeAction() {
                 let statusHTML = `<div>${responseData.message || ''}</div>`;
 
                 if (responseData.timestamp) {
-                    const timestamp = new Date(responseData.timestamp * 1000).toLocaleString('de-DE');
-                    statusHTML += `<div class="response-details">Zeitstempel: ${timestamp}</div>`;
+                    // Prüfe, ob timestamp ein String oder eine Zahl ist
+                    if (typeof responseData.timestamp === 'string') {
+                        // Wenn es ein String ist, zeige ihn direkt an
+                        statusHTML += `<div class="response-details">Zeitstempel: ${responseData.timestamp}</div>`;
+                    } else {
+                        // Wenn es eine Zahl ist (Unix-Timestamp), konvertiere sie zu einem Datum
+                        const timestamp = new Date(responseData.timestamp * 1000).toLocaleString('de-DE');
+                        statusHTML += `<div class="response-details">Zeitstempel: ${timestamp}</div>`;
+                    }
                 }
 
                 statusElement.innerHTML = statusHTML;
