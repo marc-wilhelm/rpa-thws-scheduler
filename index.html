@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ste<!DOCTYPE html>
 <html lang="de">
 <head>
     <meta charset="UTF-8">
@@ -7,19 +7,20 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+   <div class="page-layout">
     <div class="container">
         <h1>THWS Scheduler</h1>
         <h2>Business School</h2>
 
         <div id="options">
             <div class="option-card" onclick="selectOption('scrape')">
-                <div class="option-title">Vorlesungsplan aktualisieren</div>
-                <div class="option-description">Lädt den aktuellen Vorlesungsplan herunter und aktualisiert deinen Kalender.</div>
+                <div class="option-title">Vorlesungsplan importieren/aktualisieren</div>
+                <div class="option-description">Stellt eine Anfrage an die API, welche alle angegeneb Vorlesungpläne nach Modulen absucht (scrapt) und anschließend als JSON zurückgibt. Über diese JSON Struktur, wird dann iterriert, um alle Tage und Vorlesungen zu bekommen, wobei anschließend für jede vorlesung ein Termin im Kalender neu eingetragen wird oder aktualisiert wird.</div>
             </div>
 
             <div class="option-card" onclick="selectOption('clear')">
                 <div class="option-title">Kalender leeren</div>
-                <div class="option-description">Löscht alle Vorlesungstermine aus deinem Kalender.</div>
+                <div class="option-description">Löscht alle vorhanden Termine aus deinem Kalender.</div>
             </div>
         </div>
 
@@ -28,12 +29,37 @@
         <div id="status" class="status"></div>
     </div>
 
-    <footer class="footer">
-        <div class="footer-content">
-            <p>Dieses Projekt ist rein privat und steht in keiner Verbindung zu Dritten.<br>Alle Marken- und Namensrechte verbleiben bei ihren jeweiligen Eigentümern.</p>
-        </div>
-    </footer>
-    
-    <script src="script.js"></script>
+    <aside class="info-box">
+        <h3>API Info</h3>
+        <p><strong>URL:</strong><br><code>https://thws-scheduler.azurewebsites.net/api/schedule_scraper</code></p>
+
+        <h4>Content-Request:</h4>
+        <pre>
+{
+  "plans": [
+    {
+      "url": "https://business.thws.de/fileadmin/share/vlplan/BBA%206%20SS%2025.html",
+      "label": "BBA 6",
+      "filter": ["PBA1", "SPBA"]
+    },
+    {
+      "url": "https://business.thws.de/fileadmin/share/vlplan/BBW%206%20SS%2025.html",
+      "label": "BBW 6",
+      "filter": ["SP WINF"]
+    }
+  ]
+}
+        </pre>
+    </aside>
+</div>
+
+<footer class="footer">
+    <div class="footer-content">
+        <p>Dieses Projekt ist rein privat und steht in keiner Verbindung zu Dritten.<br>Alle Marken- und Namensrechte verbleiben bei ihren jeweiligen Eigentümern.</p>
+    </div>
+</footer>
+
+<script src="script.js"></script>
+
 </body>
 </html>
