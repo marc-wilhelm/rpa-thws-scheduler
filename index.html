@@ -41,7 +41,7 @@
                 <div id="plans-container">
                     <div class="plan-item">
                         <div class="input-group">
-                            <label for="plan-url-0">Vorlesungsplan-URL:</label>
+                            <label for="plan-url-0">URL:</label>
                             <input type="text" id="plan-url-0" class="plan-url" placeholder="z.B. https://business.thws.de/fileadmin/share/vlplan/BBA%206%20SS%2025.html">
                         </div>
                         <div class="input-group">
@@ -52,14 +52,14 @@
                             <label for="plan-filter-0">Module filtern (optional):</label>
                             <input type="text" id="plan-filter-0" class="plan-filter" placeholder="z.B. PBA1, SPBA">
                         </div>
-                        <button class="remove-plan" onclick="removePlan(0)" style="display: none;">Löschen</button>
+                        <button class="remove-plan" onclick="removePlan(0)" style="display: none;">Entfernen</button>
                     </div>
                 </div>
                 
                 <template id="plan-template">
                     <div class="plan-item">
                         <div class="input-group">
-                            <label for="plan-url-INDEX">Vorlesungsplan-URL:</label>
+                            <label for="plan-url-INDEX">URL:</label>
                             <input type="text" id="plan-url-INDEX" class="plan-url" placeholder="z.B. https://business.thws.de/fileadmin/share/vlplan/BBA%206%20SS%2025.html">
                         </div>
                         <div class="input-group">
@@ -70,7 +70,7 @@
                             <label for="plan-filter-INDEX">Module filtern (optional):</label>
                             <input type="text" id="plan-filter-INDEX" class="plan-filter" placeholder="z.B. PBA1, SPBA">
                         </div>
-                        <button class="remove-plan" onclick="removePlan(INDEX)">Löschen</button>
+                        <button class="remove-plan" onclick="removePlan(INDEX)">Entfernen</button>
                     </div>
                 </template>
                 <button class="add-plan-button" onclick="addPlan()">+ Weiteren Plan hinzufügen</button>
@@ -120,6 +120,7 @@
         <h4>Hilfe und Dokumentation:</h4>
         <p>Die API durchsucht die angegebenen Vorlesungspläne und extrahiert alle Veranstaltungen. Du kannst optional Module mit dem Filter-Parameter eingrenzen.</p>
         <p>Fehlermeldungen werden hier im Status-Bereich angezeigt. Bitte stelle sicher, dass die URL-Adressen korrekt sind und auf gültige THWS-Vorlesungspläne verweisen.</p>
+        <p>Dieser Service funktioniert nur in Kombination mit <a href="https://www.make.com/en" class="gradient-link">make</a></p>
     </div>
 </div>
 
