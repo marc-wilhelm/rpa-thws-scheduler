@@ -29,34 +29,6 @@
         <div id="scrape-config" class="config-section" style="display: none;">
             <h3>Konfiguration für Vorlesungsplan</h3>
             
-            <div id="vlplan-selection-container" class="selection-display">
-                <div class="selection-info">
-                    <span>Ausgewählter Vorlesungsplan:</span>
-                    <span id="selected-vlplan">Kein Vorlesungsplan ausgewählt</span>
-                    <button id="reset-vlplan-selection" style="display: none;">Zurücksetzen</button>
-                </div>
-                <button id="vlplan-toggle-button" class="toggle-button">Vorlesungspläne anzeigen</button>
-            </div>
-            
-            <!-- Verstecktes Feld für die ausgewählte Vorlesungsplan-URL -->
-            <input type="hidden" id="vlplan-url-input" name="vlplan-url">
-            
-            <!-- Ausklappbarer Bereich für Vorlesungsplan-Suche -->
-            <div id="vlplan-config" class="vlplan-section collapsed">
-                <div class="vlplan-search-container">
-                    <input type="text" id="vlplan-search-input" placeholder="Studiengang suchen...">
-                </div>
-                
-                <div id="vlplan-loader" style="display: none;">
-                    <div class="spinner"></div>
-                    <span>Lade Vorlesungspläne...</span>
-                </div>
-                
-                <div id="vlplan-error" style="display: none;"></div>
-                
-                <div id="vlplan-programs-container"></div>
-            </div>
-            
             <div class="input-tabs">
                 <div class="tab-button active" onclick="switchTab('structured')">Strukturierte Eingabe</div>
                 <div class="tab-button" onclick="switchTab('raw')">JSON (RAW)</div>
@@ -134,6 +106,5 @@
 </footer>
 
 <script src="script.js"></script>
-<script src="vlplan-scraper.js"></script>
 </body>
 </html>
