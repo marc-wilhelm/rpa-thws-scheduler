@@ -285,23 +285,3 @@ pre {
     top: 10px;
     right: 10px;
 }
-
-/* Stil für den Farbverlauf-Link */
-.gradient-link {
-    font-weight: 700; /* Fetterer Text (Bold) */
-    text-decoration: none; /* Entfernt die Unterstreichung */
-    background: linear-gradient(45deg, #ff00ff, #9500ff, #6a00ff); /* Farbverlauf von Pink zu Lila zu Violett */
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent; /* Text wird transparent, damit der Farbverlauf durchscheint */
-    padding: 2px 4px;
-    border-radius: 3px;
-    transition: all 0.3s ease; /* Smooth Übergang für Hover-Effekt */
-}
-
-/* Hover-Effekt für den Link */
-.gradient-link:hover {
-    background: linear-gradient(45deg, #ff00cc, #8100ff, #5900ff); /* Leicht dunklerer Farbverlauf bei Hover */
-    text-shadow: 0 0 5px rgba(255, 0, 255, 0.3); /* Leichtes Glühen um den Text */
-    transform: scale(1.05); /* Leichte Vergrößerung bei Hover */
-}
