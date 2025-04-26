@@ -25,6 +25,53 @@
             </div>
         </div>
 
+        <!-- Neuer Bereich für Request-Content bei Scrape -->
+        <div id="scrape-config" class="config-section" style="display: none;">
+            <h3>Konfiguration für Vorlesungsplan</h3>
+            
+            <div class="input-tabs">
+                <div class="tab-button active" onclick="switchTab('structured')">Strukturierte Eingabe</div>
+                <div class="tab-button" onclick="switchTab('raw')">JSON (RAW)</div>
+            </div>
+            
+            <!-- Strukturierte Eingabe -->
+            <div id="structured-input" class="input-panel">
+                <div id="plans-container">
+                    <div class="plan-item">
+                        <div class="input-group">
+                            <label for="plan-url-0">URL:</label>
+                            <input type="text" id="plan-url-0" class="plan-url" placeholder="z.B. https://business.thws.de/fileadmin/share/vlplan/BBA%206%20SS%2025.html">
+                        </div>
+                        <div class="input-group">
+                            <label for="plan-label-0">Label:</label>
+                            <input type="text" id="plan-label-0" class="plan-label" placeholder="z.B. BBA 6">
+                        </div>
+                        <div class="input-group">
+                            <label for="plan-filter-0">Filter (durch Komma getrennt):</label>
+                            <input type="text" id="plan-filter-0" class="plan-filter" placeholder="z.B. PBA1, SPBA">
+                        </div>
+                        <button class="remove-plan" onclick="removePlan(0)" style="display: none;">Entfernen</button>
+                    </div>
+                </div>
+                <button class="add-plan-button" onclick="addPlan()">+ Plan hinzufügen</button>
+            </div>
+            
+            <!-- JSON RAW Eingabe -->
+            <div id="raw-input" class="input-panel" style="display: none;">
+                <textarea id="json-input" placeholder='z.B.:
+{
+  "plans": [
+    {
+      "url": "https://business.thws.de/fileadmin/share/vlplan/BBA%206%20SS%2025.html",
+      "label": "BBA 6",
+      "filter": ["PBA1", "SPBA"]
+    }
+  ]
+}'></textarea>
+                <div class="json-validation" id="json-validation"></div>
+            </div>
+        </div>
+
         <button id="execute" class="execute-button" disabled onclick="executeAction()">Ausführen</button>
 
         <div id="status" class="status"></div>
@@ -34,7 +81,7 @@
         <h3>API Info</h3>
         <p><strong>URL:</strong><br><code>https://thws-scheduler.azurewebsites.net/api/schedule_scraper</code></p>
 
-        <h4>Content-Request:</h4>
+        <h4>Content-Request Format:</h4>
         <pre>{
   "plans": [
     {
