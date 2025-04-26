@@ -1,287 +1,227 @@
-html, body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
+const webhookUrl = 'https://hook.eu2.make.com/fttyrd5bv8ah1q6xyrvvu5eg88kq1b13';
+let selectedAction = null;
+let currentTab = 'structured';
+let planCounter = 1;
+
+function selectOption(action) {
+    selectedAction = action;
+
+    document.querySelectorAll('.option-card').forEach(card => {
+        card.classList.remove('selected');
+    });
+
+    document.querySelector(`.option-card:nth-child(${action === 'scrape' ? 1 : 2})`).classList.add('selected');
+
+    // Konfigurationsbereich anzeigen/ausblenden
+    const configSection = document.getElementById('scrape-config');
+    if (action === 'scrape') {
+        configSection.style.display = 'block';
+    } else {
+        configSection.style.display = 'none';
+    }
+
+    document.getElementById('execute').disabled = false;
 }
 
-body {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: #f9f9f9;
-    font-family: 'Arial', sans-serif;
+function switchTab(tab) {
+    currentTab = tab;
+    
+    // Tab-Buttons aktualisieren
+    document.querySelectorAll('.tab-button').forEach(button => {
+        button.classList.remove('active');
+    });
+    document.querySelector(`.tab-button:nth-child(${tab === 'structured' ? 1 : 2})`).classList.add('active');
+    
+    // Panels anzeigen/ausblenden
+    document.getElementById('structured-input').style.display = tab === 'structured' ? 'block' : 'none';
+    document.getElementById('raw-input').style.display = tab === 'raw' ? 'block' : 'none';
 }
 
-.page-layout {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    max-width: 800px;
-    padding: 20px;
-    gap: 20px;
+function addPlan() {
+    const plansContainer = document.getElementById('plans-container');
+    const planItem = document.createElement('div');
+    planItem.className = 'plan-item';
+    planItem.id = `plan-${planCounter}`;
+
+    planItem.innerHTML = `
+        <div class="input-group">
+            <label for="plan-url-${planCounter}">URL:</label>
+            <input type="text" id="plan-url-${planCounter}" class="plan-url" placeholder="z.B. https://business.thws.de/fileadmin/share/vlplan/BBA%206%20SS%2025.html">
+        </div>
+        <div class="input-group">
+            <label for="plan-label-${planCounter}">Label:</label>
+            <input type="text" id="plan-label-${planCounter}" class="plan-label" placeholder="z.B. BBA 6">
+        </div>
+        <div class="input-group">
+            <label for="plan-filter-${planCounter}">Filter (durch Komma getrennt):</label>
+            <input type="text" id="plan-filter-${planCounter}" class="plan-filter" placeholder="z.B. PBA1, SPBA">
+        </div>
+        <button class="remove-plan" onclick="removePlan(${planCounter})">Entfernen</button>
+    `;
+
+    plansContainer.appendChild(planItem);
+    
+    // "Entfernen"-Button für den ersten Plan anzeigen, wenn mehr als ein Plan vorhanden ist
+    if (plansContainer.children.length > 1) {
+        document.querySelector('.plan-item:first-child .remove-plan').style.display = 'block';
+    }
+    
+    planCounter++;
 }
 
-.content-block {
-    background-color: white;
-    border-radius: 12px;
-    padding: 25px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    width: 100%;
+function removePlan(id) {
+    const planItem = document.getElementById(`plan-${id}`);
+    if (planItem) {
+        planItem.remove();
+    }
+    
+    const plansContainer = document.getElementById('plans-container');
+    // "Entfernen"-Button für den ersten Plan ausblenden, wenn nur noch ein Plan vorhanden ist
+    if (plansContainer.children.length === 1) {
+        document.querySelector('.plan-item:first-child .remove-plan').style.display = 'none';
+    }
 }
 
-h1 {
-    color: #ff6a00;
-    text-align: center;
-    margin-bottom: 5px;
-    font-size: 32px;
+function validateJsonInput() {
+    const jsonInput = document.getElementById('json-input').value;
+    const jsonValidation = document.getElementById('json-validation');
+    
+    if (!jsonInput.trim()) {
+        jsonValidation.innerHTML = '';
+        return false;
+    }
+    
+    try {
+        const parsedJson = JSON.parse(jsonInput);
+        if (!parsedJson.plans || !Array.isArray(parsedJson.plans)) {
+            jsonValidation.innerHTML = '<div class="json-error">Fehler: Das JSON muss ein "plans"-Array enthalten.</div>';
+            jsonValidation.querySelector('.json-error').style.display = 'block';
+            return false;
+        }
+        
+        for (const plan of parsedJson.plans) {
+            if (!plan.url || !plan.label || !plan.filter) {
+                jsonValidation.innerHTML = '<div class="json-error">Fehler: Jeder Plan muss "url", "label" und "filter" enthalten.</div>';
+                jsonValidation.querySelector('.json-error').style.display = 'block';
+                return false;
+            }
+        }
+        
+        jsonValidation.innerHTML = '';
+        return parsedJson;
+    } catch (error) {
+        jsonValidation.innerHTML = `<div class="json-error">JSON-Fehler: ${error.message}</div>`;
+        jsonValidation.querySelector('.json-error').style.display = 'block';
+        return false;
+    }
 }
 
-h2 {
-    color: #666;
-    text-align: center;
-    margin-bottom: 30px;
-    font-size: 18px;
-    font-weight: normal;
+function getStructuredData() {
+    const plansContainer = document.getElementById('plans-container');
+    const planItems = plansContainer.querySelectorAll('.plan-item');
+    
+    const plans = [];
+    
+    for (const planItem of planItems) {
+        const url = planItem.querySelector('.plan-url').value;
+        const label = planItem.querySelector('.plan-label').value;
+        const filterString = planItem.querySelector('.plan-filter').value;
+        
+        if (!url || !label) {
+            return false;
+        }
+        
+        const filter = filterString.split(',').map(item => item.trim()).filter(item => item);
+        
+        plans.push({
+            url,
+            label,
+            filter
+        });
+    }
+    
+    if (plans.length === 0) {
+        return false;
+    }
+    
+    return { plans };
 }
 
-h3 {
-    color: #ff6a00;
-    margin-top: 0;
+async function executeAction() {
+    if (!selectedAction) return;
+
+    const statusElement = document.getElementById('status');
+    statusElement.style.display = 'block';
+    statusElement.className = 'status loading';
+    statusElement.innerHTML = '<div>Führe Aktion aus...</div>';
+
+    document.getElementById('execute').disabled = true;
+
+    try {
+        let requestData = null;
+        
+        if (selectedAction === 'scrape') {
+            if (currentTab === 'raw') {
+                requestData = validateJsonInput();
+                if (!requestData) {
+                    throw new Error('Ungültige JSON-Eingabe');
+                }
+            } else {
+                requestData = getStructuredData();
+                if (!requestData) {
+                    throw new Error('Bitte fülle alle erforderlichen Felder aus');
+                }
+            }
+        }
+        
+        const requestOptions = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                action: selectedAction,
+                requestData: requestData
+            })
+        };
+        
+        const response = await fetch(webhookUrl, requestOptions);
+
+        if (response.ok) {
+            try {
+                const responseData = await response.json();
+                statusElement.className = 'status success';
+                let statusHTML = `<div>${responseData.message || ''}</div>`;
+
+                if (responseData.timestamp) {
+                    const timestamp = new Date(responseData.timestamp * 1000).toLocaleString('de-DE');
+                    statusHTML += `<div class="response-details">Zeitstempel: ${timestamp}</div>`;
+                }
+
+                statusElement.innerHTML = statusHTML;
+            } catch (jsonError) {
+                // Wenn die Antwort nicht als JSON geparst werden kann, zeigen wir den Rohtext an
+                const responseText = await response.text();
+                statusElement.className = 'status success';
+                statusElement.innerHTML = `<div>${responseText}</div>`;
+            }
+        } else {
+            // Bei HTTP-Fehlern versuchen wir den Fehlertext auszulesen
+            const errorText = await response.text();
+            throw new Error(`HTTP-Fehler: ${response.status} - ${errorText}`);
+        }
+    } catch (error) {
+        statusElement.className = 'status error';
+        statusElement.innerHTML = `<div>Fehler: ${error.message}</div>`;
+    }
+
+    document.getElementById('execute').disabled = false;
 }
 
-h4 {
-    margin-bottom: 10px;
-    color: #333;
-}
-
-#options {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.option-card {
-    border: 2px solid #eee;
-    border-radius: 10px;
-    padding: 20px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.option-card:hover {
-    background-color: #fff3e6;
-    transform: translateY(-3px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-}
-
-.option-card.selected {
-    border-color: #ff6a00;
-    background-color: #ffe5cc;
-}
-
-.option-title {
-    font-weight: bold;
-    font-size: 20px;
-    margin-bottom: 8px;
-}
-
-.option-description {
-    color: #777;
-    font-size: 14px;
-}
-
-.execute-button {
-    display: block;
-    width: 100%;
-    padding: 14px;
-    background-color: #ff6a00;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 18px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    margin-top: 20px;
-}
-
-.execute-button:hover {
-    background-color: #e65c00;
-}
-
-.execute-button:disabled {
-    background-color: #cccccc;
-    cursor: not-allowed;
-}
-
-.status {
-    margin-top: 20px;
-    padding: 15px;
-    border-radius: 8px;
-    display: none;
-    font-size: 14px;
-}
-
-.success {
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
-}
-
-.error {
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
-}
-
-.loading {
-    background-color: #e2f3f7;
-    color: #0c5460;
-    border: 1px solid #bee5eb;
-}
-
-pre {
-    background-color: #f5f5f5;
-    padding: 10px;
-    border-radius: 8px;
-    overflow-x: auto;
-    font-size: 12px;
-}
-
-.footer {
-    background-color: #ff6a00;
-    color: white;
-    text-align: center;
-    padding: 20px 10px;
-    margin-top: 40px;
-    width: 100%;
-    font-size: 13px;
-}
-
-.footer-content {
-    max-width: 800px;
-    margin: 0 auto;
-    line-height: 1.6;
-}
-
-.footer p {
-    margin: 0;
-}
-
-/* Neue Stile für Konfigurationsbereich */
-.config-section {
-    margin-top: 20px;
-    border-top: 1px solid #eee;
-    padding-top: 20px;
-}
-
-.input-tabs {
-    display: flex;
-    margin-bottom: 15px;
-    border-bottom: 1px solid #eee;
-}
-
-.tab-button {
-    padding: 8px 16px;
-    cursor: pointer;
-    background-color: #f5f5f5;
-    border: 1px solid #ddd;
-    border-bottom: none;
-    border-radius: 5px 5px 0 0;
-    margin-right: 5px;
-}
-
-.tab-button.active {
-    background-color: #ff6a00;
-    color: white;
-    border-color: #ff6a00;
-}
-
-.input-panel {
-    border: 1px solid #eee;
-    border-radius: 0 5px 5px 5px;
-    padding: 15px;
-    margin-bottom: 20px;
-}
-
-#plans-container {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.plan-item {
-    border: 1px solid #eee;
-    border-radius: 8px;
-    padding: 15px;
-    background-color: #f9f9f9;
-    position: relative;
-}
-
-.input-group {
-    margin-bottom: 10px;
-}
-
-.input-group label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-    font-size: 14px;
-}
-
-.input-group input {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 14px;
-}
-
-#json-input {
-    width: 100%;
-    height: 200px;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-family: monospace;
-    font-size: 14px;
-    resize: vertical;
-}
-
-.json-validation {
-    margin-top: 10px;
-    font-size: 14px;
-}
-
-.json-error {
-    color: #721c24;
-    background-color: #f8d7da;
-    padding: 5px 10px;
-    border-radius: 4px;
-    display: none;
-}
-
-.add-plan-button {
-    padding: 8px 16px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-    margin-top: 10px;
-}
-
-.remove-plan {
-    padding: 5px 10px;
-    background-color: #dc3545;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 12px;
-    position: absolute;
-    top: 10px;
-    right: 10px;
-}
+// Event-Listener für JSON-Validierung
+document.addEventListener('DOMContentLoaded', function() {
+    const jsonInput = document.getElementById('json-input');
+    jsonInput.addEventListener('input', function() {
+        validateJsonInput();
+    });
+});
