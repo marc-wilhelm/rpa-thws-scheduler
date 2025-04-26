@@ -285,3 +285,214 @@ pre {
     top: 10px;
     right: 10px;
 }
+
+/* Neue Stile für Vorlesungsplan-Scraper */
+.selection-display {
+    margin-bottom: 15px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    border: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.selection-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#selected-vlplan {
+    font-weight: bold;
+    color: #ff6a00;
+}
+
+#reset-vlplan-selection {
+    background-color: transparent;
+    border: 1px solid #ff6a00;
+    color: #ff6a00;
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.toggle-button {
+    background-color: #ff6a00;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.vlplan-section {
+    border: 1px solid #eee;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
+}
+
+.vlplan-section.collapsed {
+    max-height: 0;
+    padding: 0;
+    border: none;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.vlplan-section.expanded {
+    max-height: 80vh;
+    padding: 15px;
+    opacity: 1;
+    overflow-y: auto;
+}
+
+.vlplan-search-container {
+    margin-bottom: 15px;
+}
+
+#vlplan-search-input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+#vlplan-loader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 0;
+    gap: 10px;
+}
+
+.spinner {
+    width: 30px;
+    height: 30px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #ff6a00;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+#vlplan-error {
+    padding: 10px;
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    border-radius: 4px;
+    margin-bottom: 15px;
+}
+
+.vlplan-program-item {
+    margin-bottom: 20px;
+    border: 1px solid #eee;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.vlplan-program-header {
+    background-color: #ff6a00;
+    color: white;
+    padding: 8px 12px;
+}
+
+.vlplan-program-header h3 {
+    margin: 0;
+    color: white;
+    font-size: 16px;
+}
+
+.vlplan-semesters-container {
+    padding: 10px;
+}
+
+.vlplan-semester-item {
+    margin-bottom: 15px;
+}
+
+.vlplan-semester-header {
+    font-weight: bold;
+    margin-bottom: 8px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #eee;
+}
+
+.vlplan-links-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 8px;
+}
+
+.vlplan-link-item {
+    border: 1px solid #eee;
+    border-radius: 4px;
+    padding: 8px;
+    transition: background-color 0.2s;
+    cursor: pointer;
+}
+
+.vlplan-link-item:hover {
+    background-color: #fff3e6;
+}
+
+.vlplan-link-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.vlplan-link-text {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.vlplan-link-actions {
+    display: flex;
+    gap: 5px;
+}
+
+.vlplan-link-actions button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #666;
+    padding: 3px;
+    border-radius: 3px;
+    transition: all 0.2s;
+}
+
+.vlplan-select-button:hover {
+    color: #28a745;
+    background-color: rgba(40, 167, 69, 0.1);
+}
+
+.vlplan-copy-button:hover {
+    color: #ff6a00;
+    background-color: rgba(255, 106, 0, 0.1);
+}
+
+.vlplan-link-details {
+    margin-top: 5px;
+    font-size: 12px;
+    color: #777;
+}
+
+.vlplan-no-data {
+    text-align: center;
+    padding: 15px;
+    color: #666;
+    font-style: italic;
+}
