@@ -1,17 +1,33 @@
-body {
-    font-family: 'Arial', sans-serif;
-    max-width: 500px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #f9f9f9;
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
 }
 
-.container {
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #f9f9f9;
+    font-family: 'Arial', sans-serif;
+}
+
+.page-layout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 800px;
+    padding: 20px;
+    gap: 20px;
+}
+
+.content-block {
     background-color: white;
     border-radius: 12px;
     padding: 25px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    margin-top: 50px;
+    width: 100%;
 }
 
 h1 {
@@ -29,11 +45,26 @@ h2 {
     font-weight: normal;
 }
 
+h3 {
+    color: #ff6a00;
+    margin-top: 0;
+}
+
+h4 {
+    margin-bottom: 10px;
+    color: #333;
+}
+
+#options {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
 .option-card {
     border: 2px solid #eee;
     border-radius: 10px;
     padding: 20px;
-    margin-bottom: 20px;
     cursor: pointer;
     transition: all 0.3s ease;
 }
@@ -110,10 +141,12 @@ h2 {
     border: 1px solid #bee5eb;
 }
 
-.response-details {
+pre {
+    background-color: #f5f5f5;
+    padding: 10px;
+    border-radius: 8px;
+    overflow-x: auto;
     font-size: 12px;
-    margin-top: 10px;
-    color: #666;
 }
 
 .footer {
@@ -122,6 +155,7 @@ h2 {
     text-align: center;
     padding: 20px 10px;
     margin-top: 40px;
+    width: 100%;
     font-size: 13px;
 }
 
@@ -133,20 +167,4 @@ h2 {
 
 .footer p {
     margin: 0;
-}
-
-html, body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-}
-
-body {
-    display: flex;
-    flex-direction: column;
-}
-
-.container {
-    flex: 0 0 auto; /* NICHT mehr flex: 1 */
-    padding-bottom: 20px; /* bisschen Abstand zwischen Button und Footer */
 }
