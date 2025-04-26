@@ -135,9 +135,10 @@ h2 {
     margin: 0;
 }
 
-/* Footer bleibt am unteren Rand bei wenig Inhalt */
 html, body {
     height: 100%;
+    margin: 0;
+    padding: 0;
 }
 
 body {
@@ -146,5 +147,6 @@ body {
 }
 
 .container {
-    flex: 1;
+    flex: 0 0 auto; /* NICHT mehr flex: 1 */
+    padding-bottom: 20px; /* bisschen Abstand zwischen Button und Footer */
 }
