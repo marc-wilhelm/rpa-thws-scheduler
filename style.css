@@ -117,25 +117,34 @@ h2 {
 }
 
 .footer {
-    margin-top: 40px;
-    padding: 20px;
+    background-color: #ff6a00;
+    color: white;
     text-align: center;
-    font-size: 12px;
-    color: #999;
-    background-color: #f0f0f0;
-    border-top: 1px solid #ddd;
-    border-radius: 0 0 12px 12px;
+    padding: 20px 10px;
+    margin-top: 40px;
+    font-size: 13px;
+}
+
+.footer-content {
+    max-width: 800px;
+    margin: 0 auto;
+    line-height: 1.6;
 }
 
 .footer p {
     margin: 0;
-    line-height: 1.5;
 }
 
-/* Für bessere Lesbarkeit auf kleineren Bildschirmen */
-@media (max-width: 600px) {
-    .footer {
-        font-size: 11px;
-        padding: 15px;
-    }
+/* Footer bleibt am unteren Rand bei wenig Inhalt */
+html, body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    flex: 1;
 }
