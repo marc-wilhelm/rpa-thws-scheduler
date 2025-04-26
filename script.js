@@ -1,5 +1,4 @@
 const webhookUrl = 'https://hook.eu2.make.com/fttyrd5bv8ah1q6xyrvvu5eg88kq1b13';
-const apiBaseUrl = 'http://localhost:5000'; // Nur für den Vorlesungsplan-Scraper
 let selectedAction = null;
 let currentTab = 'structured';
 let planCounter = 1;
@@ -148,74 +147,6 @@ function getStructuredData() {
     return { plans };
 }
 
-// Funktion zum automatischen Ausfüllen des ersten Plans basierend auf der ausgewählten Vorlesungsplan-URL
-function fillFirstPlanWithSelectedVlplan() {
-    // Die ausgewählte URL aus dem versteckten Feld holen
-    const selectedUrl = document.getElementById('vlplan-url-input').value;
-    
-    if (!selectedUrl) return;
-    
-    // Das erste Plan-Element finden
-    const firstPlanUrlInput = document.querySelector('.plan-item:first-child .plan-url');
-    if (firstPlanUrlInput) {
-        firstPlanUrlInput.value = selectedUrl;
-        
-        // Versuchen, ein Label aus der URL zu extrahieren
-        try {
-            const urlMatch = selectedUrl.match(/vlplan\/(.*?)\.html/);
-            if (urlMatch) {
-                const code = decodeURIComponent(urlMatch[1]);
-                const labelInput = firstPlanUrlInput.closest('.plan-item').querySelector('.plan-label');
-                if (labelInput && !labelInput.value) {
-                    labelInput.value = code;
-                }
-            }
-        } catch (e) {
-            console.error("Fehler beim Extrahieren des Labels:", e);
-        }
-    }
-}
-
-// Funktion zum Aktualisieren des JSON-Inputs basierend auf der ausgewählten Vorlesungsplan-URL
-function updateJsonWithSelectedVlplan() {
-    const selectedUrl = document.getElementById('vlplan-url-input').value;
-    
-    if (!selectedUrl) return;
-    
-    const jsonInput = document.getElementById('json-input');
-    let jsonData;
-    
-    try {
-        // Bestehende JSON-Daten parsen, falls vorhanden
-        if (jsonInput.value.trim()) {
-            jsonData = JSON.parse(jsonInput.value);
-        } else {
-            // Neue JSON-Struktur erstellen
-            jsonData = { plans: [] };
-        }
-        
-        // URL aus dem Match extrahieren für das Label
-        const urlMatch = selectedUrl.match(/vlplan\/(.*?)\.html/);
-        const code = urlMatch ? decodeURIComponent(urlMatch[1]) : 'Vorlesungsplan';
-        
-        // Neuen Plan am Anfang hinzufügen
-        jsonData.plans.unshift({
-            url: selectedUrl,
-            label: code,
-            filter: []
-        });
-        
-        // Aktualisiertes JSON zurück ins Feld schreiben
-        jsonInput.value = JSON.stringify(jsonData, null, 2);
-        
-        // JSON validieren
-        validateJsonInput();
-        
-    } catch (error) {
-        console.error("Fehler beim Aktualisieren des JSON:", error);
-    }
-}
-
 async function executeAction() {
     if (!selectedAction) return;
 
@@ -230,15 +161,6 @@ async function executeAction() {
         let requestData = null;
         
         if (selectedAction === 'scrape') {
-            // Wenn ein Vorlesungsplan ausgewählt wurde, diesen automatisch in die aktuelle Tab-Ansicht einfügen
-            if (document.getElementById('vlplan-url-input').value) {
-                if (currentTab === 'structured') {
-                    fillFirstPlanWithSelectedVlplan();
-                } else {
-                    updateJsonWithSelectedVlplan();
-                }
-            }
-            
             if (currentTab === 'raw') {
                 requestData = validateJsonInput();
                 if (!requestData) {
@@ -252,7 +174,6 @@ async function executeAction() {
             }
         }
         
-        // Anfrage direkt an make.com senden (nicht über das Python-Backend)
         const requestOptions = {
             method: 'POST',
             headers: {
@@ -299,23 +220,8 @@ async function executeAction() {
 
 // Event-Listener für JSON-Validierung
 document.addEventListener('DOMContentLoaded', function() {
-    // JSON-Validierung bei Eingabe
     const jsonInput = document.getElementById('json-input');
-    if (jsonInput) {
-        jsonInput.addEventListener('input', function() {
-            validateJsonInput();
-        });
-    }
-    
-    // Event-Listener für die Auswahl des Vorlesungsplans
-    document.getElementById('vlplan-url-input').addEventListener('change', function() {
-        const selectedUrl = this.value;
-        if (selectedUrl) {
-            if (currentTab === 'structured') {
-                fillFirstPlanWithSelectedVlplan();
-            } else {
-                updateJsonWithSelectedVlplan();
-            }
-        }
+    jsonInput.addEventListener('input', function() {
+        validateJsonInput();
     });
 });
